@@ -4,3 +4,4 @@ channels_redis==4.2.1
 djangorestframework==3.15.2
 djangorestframework-simplejwt==5.3.1
 redis==5.2.1
+y-py==0.6.2
