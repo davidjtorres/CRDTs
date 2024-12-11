@@ -16,7 +16,16 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+
+from FlomaDocs.views import CurrentUserView, DocumentView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path('api/user/', CurrentUserView.as_view()),
+    path('api/documents/<int:document_id>/', DocumentView.as_view()),
+    path('api/documents/', DocumentView.as_view(), name='document_list'),
+
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
