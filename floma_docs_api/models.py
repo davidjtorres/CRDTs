@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 class Document(models.Model):
     title = models.CharField(max_length=255)
     content = models.TextField(blank=True)
+    b_content = models.BinaryField(blank=True)
     owner = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="owned_documents"
     )
