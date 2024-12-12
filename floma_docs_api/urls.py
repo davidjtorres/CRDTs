@@ -1,5 +1,5 @@
 """
-URL configuration for FlomaDocs project.
+URL configuration for floma_docs_api project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/4.2/topics/http/urls/
@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
-from FlomaDocs.views import CurrentUserView, DocumentView
+from floma_docs_api.views import CurrentUserView, DocumentView
 
 urlpatterns = [
     path("admin/", admin.site.urls),

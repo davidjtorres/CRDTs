@@ -2,8 +2,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.db.models import Q
-from FlomaDocs.models import Document
-from FlomaDocs.serializers import DocumentSerializer
+from floma_docs_api.models import Document
+from floma_docs_api.serializers import DocumentSerializer
 
 
 class CurrentUserView(APIView):

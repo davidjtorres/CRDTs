@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from FlomaDocs.models import Document
+from floma_docs_api.models import Document
 
 
 class DocumentSerializer(serializers.ModelSerializer):

@@ -1,5 +1,5 @@
 from django.urls import path
-from FlomaDocs.consumers import DocumentConsumer
+from floma_docs_api.consumers import DocumentConsumer
 
 websocket_urlpatterns = [
     path('ws/documents/<document_id>/', DocumentConsumer.as_asgi()),
