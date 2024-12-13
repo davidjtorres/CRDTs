@@ -1,0 +1,29 @@
+.controls {
+	display: flex;
+	border: 1px solid #ccc;
+	border-top: 0;
+	padding: 10px;
+}
+
+.controls-right {
+	margin-left: auto;
+}
+
+.state {
+	margin: 10px 0;
+	font-family: monospace;
+}
+
+.state-title {
+	color: #999;
+	text-transform: uppercase;
+}
+
+.quill-editor-container {
+	width: 100%; /* Set the width of the editor container */
+	height: 400px; /* Set the height of the editor container */
+  }
+  
+  .ql-container {
+	height: 100%; /* Ensure the Quill editor takes the full height of the container */
+  }
