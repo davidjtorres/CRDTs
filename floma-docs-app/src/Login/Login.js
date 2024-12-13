@@ -1,17 +1,21 @@
 // Login.js
 import React, { useState } from 'react';
 import axiosInstance from './../AxiosInstance';
+import { useNavigate } from 'react-router-dom';
 
 const Login = ({ history }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await axiosInstance.post('/token/', { username, password });
-      localStorage.setItem('token', response.data.token);
-      history.push('/documents');
+      localStorage.setItem('token', response.data.access);
+      navigate('/documents');
     } catch (error) {
       console.error('Login failed', error);
     }
