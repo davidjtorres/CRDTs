@@ -11,7 +11,7 @@ const Navbar = () => {
 
   return (
     <nav>
-      <h1>My App</h1>
+      <h1>Floma Docs</h1>
       <button onClick={handleLogout}>Logout</button>
     </nav>
   );
