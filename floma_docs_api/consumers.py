@@ -4,6 +4,9 @@ from y_py import YDoc, apply_update, encode_state_as_update
 from asgiref.sync import sync_to_async
 import logging
 from .models import Document
+from django.conf import settings
+import jwt
+
 
 logger = logging.getLogger(__name__)
 
@@ -14,6 +17,12 @@ class DocumentConsumer(AsyncWebsocketConsumer):
         logger.info("Connected")
         self.document_id = self.scope["url_route"]["kwargs"]["document_id"]
         self.room_group_name = f"document_{self.document_id}"
+
+        # Validate connection
+        if not await self.validate_connection():
+            await self.close()
+            return
+
         # Join room group
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
 
@@ -107,3 +116,39 @@ class DocumentConsumer(AsyncWebsocketConsumer):
             logger.info(f"Document {self.document_id} saved to database")
         except Exception as e:
             logger.error(f"Error saving document to database: {e}")
+
+    async def validate_connection(self):
+        # Extract token from query parameters
+        token = self.scope["query_string"].decode().split("=")[1]
+        logger.info(f"Token: {token}")
+
+        # Validate token
+        try:
+            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
+            self.user_id = payload["user_id"]
+        except jwt.ExpiredSignatureError:
+            logger.error("Token has expired")
+            return False
+        except jwt.InvalidTokenError:
+            logger.error("Invalid token")
+            return False
+
+        # Check if user has access to the document
+        has_access = await self.user_has_access()
+        if not has_access:
+            logger.error("User does not have access to the document")
+            return False
+
+        return True
+
+    @sync_to_async
+    def user_has_access(self):
+        try:
+            document = Document.objects.get(id=self.document_id)
+            if document.owner_id == self.user_id:
+                return True
+            if document.collaborators.filter(id=self.user_id).exists():
+                return True
+        except Document.DoesNotExist:
+            return False
+        return False
