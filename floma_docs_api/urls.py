@@ -18,12 +18,13 @@ from django.contrib import admin
 from django.urls import path
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
-from floma_docs_api.views import CurrentUserView, DocumentView
+from floma_docs_api.views import CurrentUserView, DocumentView, InviteCollaboratorView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path('api/user/', CurrentUserView.as_view()),
     path('api/documents/<int:document_id>/', DocumentView.as_view()),
+    path('api/documents/<int:document_id>/invite/', InviteCollaboratorView.as_view(), name='invite-collaborator'),
     path('api/documents/', DocumentView.as_view(), name='document_list'),
 
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
