@@ -5,7 +5,7 @@ import './Editor.css';
 
 // Editor is an uncontrolled React component
 const Editor = forwardRef(
-  ({ readOnly, defaultValue, onTextChange, onSelectionChange }, ref) => {
+  ({ readOnly, defaultValue, onTextChange, onSelectionChange, onReady }, ref) => {
     const containerRef = useRef(null);
     const defaultValueRef = useRef(defaultValue);
     const onTextChangeRef = useRef(onTextChange);
@@ -43,11 +43,13 @@ const Editor = forwardRef(
         onSelectionChangeRef.current?.(...args);
       });
 
+      onReady?.();
+
       return () => {
         ref.current = null;
         container.innerHTML = '';
       };
-    }, [ref]);
+    }, [ref, onReady]);
 
     return <div ref={containerRef} className="quill-editor-container" />;
   },
