@@ -1,5 +1,5 @@
-// DocumentList.js
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import axiosInstance from './../AxiosInstance';
 
 const DocumentList = () => {
@@ -8,7 +8,7 @@ const DocumentList = () => {
   useEffect(() => {
     const fetchDocuments = async () => {
       try {
-        const response = await axiosInstance.get('/documents');
+        const response = await axiosInstance.get('/documents/');
         setDocuments(response.data);
       } catch (error) {
         console.error('Failed to fetch documents', error);
@@ -23,7 +23,9 @@ const DocumentList = () => {
       <h1>Document List</h1>
       <ul>
         {documents.map((doc) => (
-          <li key={doc.id}>{doc.title}</li>
+          <li key={doc.id}>
+            <Link to={`/editor/${doc.id}`}>{doc.title}</Link>
+          </li>
         ))}
       </ul>
     </div>
