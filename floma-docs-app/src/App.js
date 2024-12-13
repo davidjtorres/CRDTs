@@ -11,7 +11,7 @@ const App = () => {
     <Router>
       <Routes>
         <Route path="/login" element={<Login />} />
-        <Route path="/editor/:document_id" element={<PrivateRoute element={withNavbar(DocumentEditor)} />} />
+        <Route path="/document/:document_id" element={<PrivateRoute element={withNavbar(DocumentEditor)} />} />
         <Route path="/documents" element={<PrivateRoute element={withNavbar(DocumentList)} />} />
         <Route path="/" element={<div>Home</div>} />
       </Routes>
