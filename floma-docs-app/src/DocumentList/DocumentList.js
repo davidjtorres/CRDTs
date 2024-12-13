@@ -24,7 +24,7 @@ const DocumentList = () => {
       <ul>
         {documents.map((doc) => (
           <li key={doc.id}>
-            <Link to={`/editor/${doc.id}`}>{doc.title}</Link>
+            <Link to={`/document/${doc.id}`}>{doc.title}</Link>
           </li>
         ))}
       </ul>
