@@ -21,7 +21,7 @@ class DocumentConsumer(AsyncWebsocketConsumer):
         try:
             self.redis_client = redis.StrictRedis(host="redis", port=6379)
         except redis.ConnectionError as e:
-            print(e)
+            logger.error(f"Error saving document to database: {e}")
             return
 
         # Initialize YDoc and YText
@@ -31,7 +31,6 @@ class DocumentConsumer(AsyncWebsocketConsumer):
         # Load document state from Redis
         state = await self.get_document_state()
         if state:
-            logger.info("state found")
             apply_update(self.ydoc, state)
 
         # Accept the WebSocket connection
@@ -72,12 +71,21 @@ class DocumentConsumer(AsyncWebsocketConsumer):
 
     @sync_to_async
     def get_document_state(self):
+        # Get the document content from redis or the database
         try:
             state = self.redis_client.get(f"document_state_{self.document_id}")
             if state:
                 return state
-        except Exception:
-            logger.error("Error getting document state from Redis")
+            else:
+                try:
+                    document = Document.objects.get(id=self.document_id)
+                    return document.b_content
+                except Document.DoesNotExist:
+                    return None
+
+        except Exception as e:
+            logger.error(f"Error getting document state from Redis/DB: {e}")
+            return None
 
     async def save_document_state(self, state):
         try:
