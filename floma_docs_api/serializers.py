@@ -4,7 +4,16 @@ from django.contrib.auth.models import User
 from .models import Document
 
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["id", "username", "email"]
+
+
 class DocumentSerializer(serializers.ModelSerializer):
+    owner = UserSerializer(read_only=True)
+    collaborators = UserSerializer(many=True, read_only=True)
+
     class Meta:
         model = Document
         fields = [
