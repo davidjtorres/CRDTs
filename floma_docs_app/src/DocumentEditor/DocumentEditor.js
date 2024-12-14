@@ -17,7 +17,9 @@ const DocumentEditor = () => {
     const connect_socket = () => {
         if (wsRef.current) return;
         const ws = new WebSocket(
-            `http://localhost:8000/ws/documents/${document_id}/?token=${localStorage.getItem("token")}`
+            `http://localhost:8000/ws/documents/${document_id}/?token=${localStorage.getItem(
+                'token'
+            )}`
         );
         ws.binaryType = 'arraybuffer';
         wsRef.current = ws;
@@ -26,7 +28,7 @@ const DocumentEditor = () => {
         };
         ws.onclose = () => {
             console.log('socket disconnected');
-        }
+        };
 
         ws.onmessage = (event) => {
             documentRef.current.transact(() => {
@@ -58,13 +60,19 @@ const DocumentEditor = () => {
     };
 
     useEffect(() => {
+        connect_socket();
+        return () => {
+            wsRef.current.close();
+        };
+    }, []);
+
+    useEffect(() => {
         const fetchDocument = async () => {
             try {
                 const response = await axiosInstance.get(
                     `/documents/${document_id}`
                 );
                 setDocument(response.data);
-                connect_socket();
             } catch (error) {
                 console.error('Failed to fetch document', error);
             }
