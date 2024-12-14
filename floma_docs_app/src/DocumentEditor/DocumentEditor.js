@@ -10,6 +10,7 @@ const ORIGIN_REMOTE = 'remote';
 const DocumentEditor = () => {
     const { document_id } = useParams();
     const [document, setDocument] = useState(null);
+    const [email, setEmail] = useState('');
     const wsRef = useRef(null);
     const documentRef = useRef(new Y.Doc());
     const quillRef = useRef();
@@ -38,12 +39,28 @@ const DocumentEditor = () => {
         };
     };
 
+    const handleInvite = async () => {
+        try {
+            await axiosInstance.post(`/documents/${document_id}/invite/`, {
+                email,
+            });
+            // Refetch the document to update the collaborators list
+            const response = await axiosInstance.get(
+                `/documents/${document_id}`
+            );
+            setDocument(response.data);
+            setEmail(''); // Clear the input field
+        } catch (error) {
+            console.error('Failed to invite collaborator', error);
+        }
+    };
+
     const bind_document = () => {
         // Bind Yjs document to Quill editor
 
         const handleUpdate = (update, origin) => {
             // Only send updates that originated locally
-            if (origin != ORIGIN_REMOTE) {
+            if (origin !== ORIGIN_REMOTE) {
                 wsRef.current.send(update);
             }
         };
@@ -53,7 +70,7 @@ const DocumentEditor = () => {
         let quill = quillRef.current;
 
         //Binding Quill to Yjs document
-        const binding = new QuillBinding(
+        new QuillBinding(
             documentRef.current.getText('content'),
             quill
         );
@@ -88,7 +105,7 @@ const DocumentEditor = () => {
     return (
         <div>
             <h2>{document.title}</h2>
-            <div className="App">
+            <div>
                 <Editor
                     ref={quillRef}
                     readOnly={false}
@@ -96,6 +113,23 @@ const DocumentEditor = () => {
                         bind_document();
                     }}
                 />
+            </div>
+            <div>
+                <h3>Collaborators</h3>
+                <ul>
+                    {document.collaborators.map((collaborator) => (
+                        <li key={collaborator.id}>
+                            {collaborator.username} ({collaborator.email})
+                        </li>
+                    ))}
+                </ul>
+                <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Collaborator email"
+                />
+                <button onClick={handleInvite}>Invite</button>
             </div>
         </div>
     );
