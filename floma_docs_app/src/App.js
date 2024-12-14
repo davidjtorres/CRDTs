@@ -5,6 +5,7 @@ import DocumentEditor from './DocumentEditor/DocumentEditor';
 import DocumentList from './DocumentList/DocumentList';
 import PrivateRoute from './PrivateRoute/PrivateRoute';
 import withNavbar from './withNavbar/withNavbar';
+import CreateDocument from './CreateDocument/CreateDocument';
 
 const App = () => {
   return (
@@ -13,6 +14,7 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/document/:document_id" element={<PrivateRoute element={withNavbar(DocumentEditor)} />} />
         <Route path="/documents" element={<PrivateRoute element={withNavbar(DocumentList)} />} />
+        <Route path="/create-document" element={<PrivateRoute element={withNavbar(CreateDocument)} />} />
         <Route path="/" element={<div>Home</div>} />
       </Routes>
     </Router>
