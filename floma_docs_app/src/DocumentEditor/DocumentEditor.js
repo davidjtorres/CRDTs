@@ -51,7 +51,7 @@ const DocumentEditor = () => {
             setDocument(response.data);
             setEmail(''); // Clear the input field
         } catch (error) {
-            console.error('Failed to invite collaborator', error);
+            alert('Failed to invite collaborator');
         }
     };
 
@@ -70,10 +70,7 @@ const DocumentEditor = () => {
         let quill = quillRef.current;
 
         //Binding Quill to Yjs document
-        new QuillBinding(
-            documentRef.current.getText('content'),
-            quill
-        );
+        new QuillBinding(documentRef.current.getText('content'), quill);
     };
 
     useEffect(() => {
@@ -113,6 +110,12 @@ const DocumentEditor = () => {
                         bind_document();
                     }}
                 />
+            </div>
+            <div>
+                <h3>Owner</h3>
+                <p>
+                    {document.owner.username} ({document.owner.email}){' '}
+                </p>
             </div>
             <div>
                 <h3>Collaborators</h3>
