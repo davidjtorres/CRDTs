@@ -17,7 +17,7 @@ const Login = ({ history }) => {
       localStorage.setItem('token', response.data.access);
       navigate('/documents');
     } catch (error) {
-      console.error('Login failed', error);
+      alert('Invalid credentials');
     }
   };
 
