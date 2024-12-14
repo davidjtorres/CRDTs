@@ -20,7 +20,8 @@ const DocumentList = () => {
 
   return (
     <div>
-      <h1>Document List</h1>
+      <h1>Documents</h1>
+      <Link to="/create-document">Create Document</Link>
       <ul>
         {documents.map((doc) => (
           <li key={doc.id}>
