@@ -48,6 +48,10 @@ class DocumentConsumer(AsyncWebsocketConsumer):
         await self.send(bytes_data=encode_state_as_update(self.ydoc))
 
     async def disconnect(self, close_code):
+
+        content = str(self.ydoc.get_text("content"))
+        b_content = encode_state_as_update(self.ydoc)
+        await self.save_document_content_to_db(content=content, b_content=b_content)
         # Leave room group
         await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
@@ -104,14 +108,13 @@ class DocumentConsumer(AsyncWebsocketConsumer):
             logger.error(e)
 
     @sync_to_async
-    def save_document_to_db(self):
+    def save_document_content_to_db(self, content, b_content):
+        logger.info("Saving document to database")
         try:
-            # Get the document content from YDoc
-            content = self.ytext.to_string()
-
             # Save the document content to the database
             Document.objects.update_or_create(
-                id=self.document_id, defaults={"content": content}
+                id=self.document_id,
+                defaults={"content": content, "b_content": b_content},
             )
             logger.info(f"Document {self.document_id} saved to database")
         except Exception as e:
