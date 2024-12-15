@@ -4,6 +4,7 @@ import axiosInstance from './../AxiosInstance';
 import * as Y from 'yjs';
 import { QuillBinding } from 'y-quill';
 import Editor from './../Editor/Editor';
+import { useSession } from './../ContextProviders/SessionContext';
 
 const ORIGIN_REMOTE = 'remote';
 
@@ -14,6 +15,7 @@ const DocumentEditor = () => {
     const wsRef = useRef(null);
     const documentRef = useRef(new Y.Doc());
     const quillRef = useRef();
+    const { user } = useSession();
 
     const connect_socket = () => {
         if (wsRef.current) return;
@@ -126,13 +128,18 @@ const DocumentEditor = () => {
                         </li>
                     ))}
                 </ul>
-                <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Collaborator email"
-                />
-                <button onClick={handleInvite}>Invite</button>
+                {document?.owner.id === user?.id && (
+                    <div>
+                        <h3>Invite Collaborator</h3>
+                        <input
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            placeholder="Collaborator email"
+                        />
+                        <button onClick={handleInvite}>Invite</button>
+                    </div>
+                )}
             </div>
         </div>
     );
