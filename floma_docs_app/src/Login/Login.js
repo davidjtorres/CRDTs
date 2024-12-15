@@ -2,11 +2,13 @@
 import React, { useState } from 'react';
 import axiosInstance from './../AxiosInstance';
 import { useNavigate } from 'react-router-dom';
+import { useSession } from './../ContextProviders/SessionContext';
 
-const Login = ({ history }) => {
+const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+  const { setUser } = useSession();
 
 
 
@@ -15,6 +17,8 @@ const Login = ({ history }) => {
     try {
       const response = await axiosInstance.post('/token/', { username, password });
       localStorage.setItem('token', response.data.access);
+      const userResponse = await axiosInstance.get('/user');
+      setUser(userResponse.data);
       navigate('/documents');
     } catch (error) {
       alert('Invalid credentials');
