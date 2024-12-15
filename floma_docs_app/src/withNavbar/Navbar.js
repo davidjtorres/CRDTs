@@ -4,10 +4,11 @@ import { useSession } from './../ContextProviders/SessionContext';
 
 const Navbar = () => {
     const navigate = useNavigate();
-    const { user } = useSession();
+    const { user, setUser } = useSession();
 
     const handleLogout = () => {
         localStorage.removeItem('token');
+        setUser(null);
         navigate('/login');
     };
 
@@ -15,9 +16,7 @@ const Navbar = () => {
         <nav>
             <h1>Floma Docs</h1>
             <div>
-                <span  style={{ marginRight: '10px' }}>
-                    {user?.username}
-                </span>
+                <span style={{ marginRight: '10px' }}>{user?.username}</span>
                 <button onClick={handleLogout}>Logout</button>
             </div>
         </nav>
