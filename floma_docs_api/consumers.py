@@ -88,9 +88,11 @@ class DocumentConsumer(AsyncWebsocketConsumer):
         try:
             state = self.redis_client.get(f"document_state_{self.document_id}")
             if state:
+                logger.info("Document state found in Redis")
                 return state
             else:
                 try:
+                    logger.info("Document state found in DB")
                     document = Document.objects.get(id=self.document_id)
                     return document.b_content
                 except Document.DoesNotExist:
@@ -104,7 +106,6 @@ class DocumentConsumer(AsyncWebsocketConsumer):
         try:
             self.redis_client.set(f"document_state_{self.document_id}", state)
         except Exception as e:
-            # log error
             logger.error(e)
 
     @sync_to_async
@@ -146,6 +147,7 @@ class DocumentConsumer(AsyncWebsocketConsumer):
 
     @sync_to_async
     def user_has_access(self):
+        #validate if user has access to the document
         try:
             document = Document.objects.get(id=self.document_id)
             if document.owner_id == self.user_id:
