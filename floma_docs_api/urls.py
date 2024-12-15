@@ -22,10 +22,10 @@ from floma_docs_api.views import CurrentUserView, DocumentView, InviteCollaborat
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path('api/user/', CurrentUserView.as_view()),
-    path('api/documents/<int:document_id>/', DocumentView.as_view()),
+    path('api/user/', CurrentUserView.as_view(), name='current-user'),
+    path('api/documents/<int:document_id>/', DocumentView.as_view(), name='document-detail'),
     path('api/documents/<int:document_id>/invite/', InviteCollaboratorView.as_view(), name='invite-collaborator'),
-    path('api/documents/', DocumentView.as_view(), name='document_list'),
+    path('api/documents/', DocumentView.as_view(), name='document-list'),
 
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
