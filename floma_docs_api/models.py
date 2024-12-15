@@ -13,7 +13,6 @@ class Document(models.Model):
         User, related_name="collaborating_documents", blank=True
     )
     created_at = models.DateTimeField(auto_now_add=True)
-    last_edited_at = models.DateTimeField()
 
     def __str__(self):
         return self.title

@@ -1,5 +1,4 @@
 from rest_framework import serializers
-from django.utils import timezone
 from django.contrib.auth.models import User
 from .models import Document
 
@@ -24,14 +23,12 @@ class DocumentSerializer(serializers.ModelSerializer):
             "owner",
             "collaborators",
             "created_at",
-            "last_edited_at",
         ]
         read_only_fields = [
             "id",
             "owner",
             "collaborators",
             "created_at",
-            "last_edited_at",
         ]
 
     def create(self, validated_data):
@@ -39,13 +36,11 @@ class DocumentSerializer(serializers.ModelSerializer):
         document = Document.objects.create(
             title=validated_data["title"],
             owner=request.user,
-            last_edited_at=timezone.now(),
         )
         return document
 
     def update(self, instance, validated_data):
         instance.title = validated_data.get("title", instance.title)
-        instance.last_edited_at = timezone.now()
         instance.save()
         return instance
 
