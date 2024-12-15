@@ -94,6 +94,8 @@ class DocumentConsumer(AsyncWebsocketConsumer):
                 try:
                     logger.info("Document state found in DB")
                     document = Document.objects.get(id=self.document_id)
+                    # Save the document content to Redis
+                    self.redis_client.set(f"document_state_{self.document_id}", document.b_content)
                     return document.b_content
                 except Document.DoesNotExist:
                     return None
