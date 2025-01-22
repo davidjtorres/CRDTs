@@ -17,6 +17,30 @@ const DocumentEditor = () => {
 	const quillRef = useRef();
 	const { user } = useSession();
 
+	const connect_socket = () => {
+		if (wsRef.current) return;
+		const ws = new WebSocket(
+			`http://localhost:8000/ws/documents/${document_id}/?token=${localStorage.getItem(
+				"token"
+			)}`
+		);
+		ws.binaryType = "arraybuffer";
+		wsRef.current = ws;
+		ws.onopen = () => {
+			console.log("socket connected");
+		};
+		ws.onclose = () => {
+			console.log("socket disconnected");
+		};
+
+		ws.onmessage = (event) => {
+			documentRef.current.transact(() => {
+				const update = new Uint8Array(event.data);
+				Y.applyUpdate(documentRef.current, update);
+			}, ORIGIN_REMOTE);
+		};
+	};
+
 	const handleInvite = async () => {
 		try {
 			await axiosInstance.post(`/documents/${document_id}/invite/`, {
@@ -32,13 +56,9 @@ const DocumentEditor = () => {
 	};
 
 	const bind_document = () => {
-		// Bind Yjs document to Quill editor
-
 		const handleUpdate = (update, origin) => {
 			// Only send updates that originated locally
-			if (origin !== ORIGIN_REMOTE) {
-				wsRef.current.send(update);
-			}
+			wsRef.current.send(update);
 		};
 
 		documentRef.current.on("update", handleUpdate);
@@ -50,35 +70,11 @@ const DocumentEditor = () => {
 	};
 
 	useEffect(() => {
-		const connect_socket = () => {
-			if (wsRef.current) return;
-			const ws = new WebSocket(
-				`http://localhost:8000/ws/documents/${document_id}/?token=${localStorage.getItem(
-					"token"
-				)}`
-			);
-			ws.binaryType = "arraybuffer";
-			wsRef.current = ws;
-			ws.onopen = () => {
-				console.log("socket connected");
-			};
-			ws.onclose = () => {
-				console.log("socket disconnected");
-			};
-
-			ws.onmessage = (event) => {
-				documentRef.current.transact(() => {
-					const update = new Uint8Array(event.data);
-					Y.applyUpdate(documentRef.current, update);
-				}, ORIGIN_REMOTE);
-			};
-		};
-
 		connect_socket();
 		return () => {
 			wsRef.current.close();
 		};
-	}, [document_id]);
+	}, []);
 
 	useEffect(() => {
 		const fetchDocument = async () => {
