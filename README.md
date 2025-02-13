@@ -14,3 +14,7 @@ docker-compose up --build
 
 ### Step 2: Access aplication: 
 Once the containers are up and running, you can access the application in your web browser at http://localhost:3000
+
+### Ste 3: Sandbox credentials
+user: dealajota
+password: floma1234
